@@ -1,6 +1,10 @@
 // Global speed variable shared by the car engine and the scrolling track
 window.trackSpeed = 15; // Starting speed
 
+// CHANGE THIS VARIABLE to adjust how often incoming traffic cars spawn (in seconds)!
+// Example: 5 = spawns a car every 5 seconds, 2 = spawns a car every 2 seconds
+window.carSpawnIntervalSeconds = 2;
+
 // 1. CAR CONTROLS COMPONENT (Steer Left/Right, Gas/Brake Up/Down)
 AFRAME.registerComponent('car-controls', {
     schema: {
@@ -97,10 +101,9 @@ AFRAME.registerComponent('arcade-movement', {
     }
 });
 
-// 4. TRAFFIC SPAWNER COMPONENT (Spawns a car in alternating lanes every 5 seconds)
+// 4. TRAFFIC SPAWNER COMPONENT (Reads window.carSpawnIntervalSeconds)
 AFRAME.registerComponent('traffic-spawner', {
     schema: {
-        interval: { type: 'number', default: 5000 }, // 5 seconds interval
         startZ: { type: 'number', default: -38 },
         resetZ: { type: 'number', default: 4 }
     },
@@ -116,8 +119,11 @@ AFRAME.registerComponent('traffic-spawner', {
         if (!timeDelta) return;
         this.timer += timeDelta;
 
-        if (this.timer >= this.data.interval) {
-            this.timer = this.timer % this.data.interval;
+        // Reads window.carSpawnIntervalSeconds dynamically (convert seconds to ms)
+        let intervalMs = (window.carSpawnIntervalSeconds || 5) * 1000;
+
+        if (this.timer >= intervalMs) {
+            this.timer = this.timer % intervalMs;
             this.spawnCarInNextLane();
         }
     },
@@ -306,4 +312,4 @@ AFRAME.registerComponent('traffic-car', {
             }, 250);
         }
     }
-});
+});
