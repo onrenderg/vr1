@@ -12,12 +12,17 @@
     <link rel="apple-touch-icon" href="icon-512.png">
     <link rel="stylesheet" href="style.css">
 
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <!-- LOCAL AFRAME LIBRARY -->
+    <script src="aframe.min.js"></script>
     <script src="script.js"></script>
 </head>
 
 <body>
     <a-scene traffic-spawner webxr="requiredFeatures: hit-test, local-floor;">
+        <!-- VR CONTROLLERS & RAYCASTERS -->
+        <a-entity id="left-controller" oculus-touch-controls="hand: left" exit-modal-handler laser-controls="hand: left" raycaster="objects: .clickable; far: 5"></a-entity>
+        <a-entity id="right-controller" oculus-touch-controls="hand: right" exit-modal-handler laser-controls="hand: right" raycaster="objects: .clickable; far: 5"></a-entity>
+
         <!-- SKY -->
         <a-sky color="#5c94fc"></a-sky>
 
@@ -48,7 +53,7 @@
         <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.02 -30" rotation="-90 0 0" width="0.2" height="3" color="#ffffff"></a-plane>
         <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.02 -38" rotation="-90 0 0" width="0.2" height="3" color="#ffffff"></a-plane>
 
-        <!-- Looping Roadside Trees (Shifted outside 12-wide road to X = -7 and X = 7) -->
+        <!-- Looping Roadside Trees -->
         <a-box infinite-scroll="resetZ: 2; startZ: -38" position="-7 1 -10" width="1" height="2" depth="1" color="#58a436"></a-box>
         <a-box infinite-scroll="resetZ: 2; startZ: -38" position="7 1 -24" width="1" height="2" depth="1" color="#58a436"></a-box>
         <a-box infinite-scroll="resetZ: 2; startZ: -38" position="-7 1 -38" width="1" height="2" depth="1" color="#58a436"></a-box>
@@ -66,6 +71,26 @@
                     
                     <!-- CRASH WARNING TEXT HUD -->
                     <a-text id="crash-warning-text" value="💥 CRASH PENALTY!" position="-0.7 0.35 -0.6" scale="0.45 0.45 0.45" color="#ff1111" visible="false"></a-text>
+
+                    <!-- EXIT GAME DIALOG MODAL (Attached to camera view) -->
+                    <a-entity id="exit-modal" position="0 0.05 -0.8" visible="false">
+                        <a-plane position="0 0 0" width="0.9" height="0.5" color="#0f172a" material="shader: flat; opacity: 0.95; transparent: true"></a-plane>
+                        <a-text value="EXIT GAME?" position="0 0.15 0.01" align="center" color="#ffffff" scale="0.45 0.45 0.45"></a-text>
+                        <a-text value="Press X key / button to toggle" position="0 0.07 0.01" align="center" color="#94a3b8" scale="0.22 0.22 0.22"></a-text>
+                        
+                        <!-- EXIT BUTTON (Red) -->
+                        <a-box id="btn-exit-game" class="clickable" position="-0.2 -0.08 0.02" width="0.32" height="0.14" depth="0.02" color="#ef4444">
+                            <a-text value="EXIT" position="0 0 0.02" align="center" color="#ffffff" scale="0.35 0.35 0.35"></a-text>
+                        </a-box>
+                        
+                        <!-- STAY BUTTON (Green) -->
+                        <a-box id="btn-stay-game" class="clickable" position="0.2 -0.08 0.02" width="0.32" height="0.14" depth="0.02" color="#22c55e">
+                            <a-text value="STAY" position="0 0 0.02" align="center" color="#ffffff" scale="0.35 0.35 0.35"></a-text>
+                        </a-box>
+                    </a-entity>
+
+                    <!-- CURSOR FOR DESKTOP & VR SELECTION -->
+                    <a-cursor id="mouse-cursor" raycaster="objects: .clickable" cursor="fuse: false" position="0 0 -0.5" geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.01" material="color: white; shader: flat"></a-cursor>
                 </a-camera>
             </a-entity>
 
@@ -73,9 +98,9 @@
             <!-- REAL SPORTS CAR EXTERIOR & INTERIOR BODY            -->
             <!-- =================================================== -->
 
-            <!-- FRONT CAR HOOD / BONNET (Extends forward in front of driver) -->
+            <!-- FRONT CAR HOOD / BONNET -->
             <a-box position="0 0.45 -1.6" width="1.6" height="0.35" depth="2.2" color="#e74c3c"></a-box>
-            <!-- Hood Center Power Bulge / Stripe -->
+            <!-- Hood Center Power Bulge -->
             <a-box position="0 0.63 -1.6" width="0.4" height="0.05" depth="2.1" color="#111111"></a-box>
 
             <!-- FRONT BUMPER & HEADLIGHTS -->

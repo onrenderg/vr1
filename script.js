@@ -2,13 +2,15 @@
 window.trackSpeed = 15; // Starting speed
 
 // CHANGE THIS VARIABLE to adjust how often incoming traffic cars spawn (in seconds)!
-// Example: 5 = spawns a car every 5 seconds, 2 = spawns a car every 2 seconds
 window.carSpawnIntervalSeconds = 2;
 
-// 1. CAR CONTROLS COMPONENT (Steer Left/Right, Gas/Brake Up/Down)
+// Global game pause flag (used when Exit modal is active)
+window.isGamePaused = false;
+
+// 1. CAR CONTROLS COMPONENT (Keyboard + VR Controller Thumbstick)
 AFRAME.registerComponent('car-controls', {
     schema: {
-        steerSpeed: { type: 'number', default: 4.0 }, // How fast car moves sideways
+        steerSpeed: { type: 'number', default: 5.0 }, // How fast car moves sideways
         maxSpeed: { type: 'number', default: 45 },    // Max forward speed
         minSpeed: { type: 'number', default: 5 },     // Min forward speed (idle)
         acceleration: { type: 'number', default: 15 },// How fast you speed up
@@ -18,9 +20,18 @@ AFRAME.registerComponent('car-controls', {
     init: function () {
         // Keep track of which keys are currently held down
         this.keys = {};
+        this.xButtonPressed = false;
+
+        // Find Steering Wheel Entity for realistic visual turn animation
+        this.steeringWheelEl = this.el.querySelector('a-torus')?.parentNode || null;
 
         window.addEventListener('keydown', (e) => {
             this.keys[e.code] = true;
+
+            // Press 'X' key to open/close Exit Modal
+            if (e.code === 'KeyX') {
+                if (window.toggleExitModal) window.toggleExitModal();
+            }
         });
 
         window.addEventListener('keyup', (e) => {
@@ -29,32 +40,85 @@ AFRAME.registerComponent('car-controls', {
     },
 
     tick: function (time, timeDelta) {
+        if (window.isGamePaused) return; // Freeze car controls when Exit menu is open
+
         let dt = timeDelta / 1000; // Delta time in seconds
         let pos = this.el.object3D.position;
 
-        // --- STEERING (Left / Right) ---
-        // ArrowLeft or KeyA
-        if (this.keys['ArrowLeft'] || this.keys['KeyA']) {
-            pos.x -= this.data.steerSpeed * dt;
-        }
-        // ArrowRight or KeyD
-        if (this.keys['ArrowRight'] || this.keys['KeyD']) {
-            pos.x += this.data.steerSpeed * dt;
+        let moveX = 0; // Sideways steering input (-1 left, +1 right)
+        let moveY = 0; // Acceleration/Brake input (+1 gas, -1 brake)
+
+        // --- 1. KEYBOARD CONTROLS ---
+        if (this.keys['ArrowLeft'] || this.keys['KeyA']) moveX -= 1;
+        if (this.keys['ArrowRight'] || this.keys['KeyD']) moveX += 1;
+        if (this.keys['ArrowUp'] || this.keys['KeyW']) moveY += 1;
+        if (this.keys['ArrowDown'] || this.keys['KeyS']) moveY -= 1;
+
+        // --- 2. VR THUMBSTICK & CONTROLLER INPUT ---
+        let gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+        for (let i = 0; i < gamepads.length; i++) {
+            let gp = gamepads[i];
+            if (!gp || !gp.axes) continue;
+
+            // Reading Quest / VR Controller Thumbsticks
+            let axisX = 0;
+            let axisY = 0;
+
+            if (gp.axes.length >= 4) {
+                // Primary thumbstick axes: axes[2] (X) and axes[3] (Y)
+                let mainX = gp.axes[2];
+                let mainY = gp.axes[3];
+                let fallbackX = gp.axes[0];
+                let fallbackY = gp.axes[1];
+
+                axisX = Math.abs(mainX) > 0.15 ? mainX : (Math.abs(fallbackX) > 0.15 ? fallbackX : 0);
+                axisY = Math.abs(mainY) > 0.15 ? mainY : (Math.abs(fallbackY) > 0.15 ? fallbackY : 0);
+            } else if (gp.axes.length >= 2) {
+                let ax0 = gp.axes[0];
+                let ax1 = gp.axes[1];
+                axisX = Math.abs(ax0) > 0.15 ? ax0 : 0;
+                axisY = Math.abs(ax1) > 0.15 ? ax1 : 0;
+            }
+
+            if (Math.abs(axisX) > 0.15) moveX = axisX;
+            // Thumbstick Y is negative when pushed UP (accelerate) and positive when pulled DOWN (brake)
+            if (Math.abs(axisY) > 0.15) moveY = -axisY;
+
+            // Check Left Controller 'X' button (Button index 4 or 3 depending on browser mapping)
+            let isXDown = (gp.buttons[4] && gp.buttons[4].pressed) || (gp.buttons[3] && gp.buttons[3].pressed);
+            if (isXDown) {
+                if (!this.xButtonPressed) {
+                    this.xButtonPressed = true;
+                    if (window.toggleExitModal) window.toggleExitModal();
+                }
+            } else {
+                this.xButtonPressed = false;
+            }
         }
 
-        // Keep the car within the borders of the asphalt!
+        // --- APPLY STEERING (Left / Right) ---
+        if (moveX !== 0) {
+            pos.x += moveX * this.data.steerSpeed * dt;
+        }
+
+        // Keep car within the road borders (-5.2 to +5.2)
         if (pos.x < -this.data.roadLimitX) pos.x = -this.data.roadLimitX;
         if (pos.x > this.data.roadLimitX) pos.x = this.data.roadLimitX;
 
-        // --- ACCELERATION & BRAKES (Up / Down) ---
-        // ArrowUp or KeyW (Gas Pedal - speeds up the track!)
-        if (this.keys['ArrowUp'] || this.keys['KeyW']) {
-            window.trackSpeed += this.data.acceleration * dt;
-            if (window.trackSpeed > this.data.maxSpeed) window.trackSpeed = this.data.maxSpeed;
+        // Steering Wheel 3D Rotation Effect
+        if (this.steeringWheelEl && window.THREE) {
+            let targetRotZ = -moveX * 0.7; // Rotate steering wheel on turn
+            this.steeringWheelEl.object3D.rotation.z += (targetRotZ - this.steeringWheelEl.object3D.rotation.z) * 0.2;
         }
-        // ArrowDown or KeyS (Brake Pedal - slows down the track!)
-        else if (this.keys['ArrowDown'] || this.keys['KeyS']) {
-            window.trackSpeed -= (this.data.acceleration * 1.5) * dt;
+
+        // --- APPLY ACCELERATION & BRAKES (Up / Down) ---
+        if (moveY > 0) {
+            // Gas Pedal - speed up!
+            window.trackSpeed += moveY * this.data.acceleration * dt;
+            if (window.trackSpeed > this.data.maxSpeed) window.trackSpeed = this.data.maxSpeed;
+        } else if (moveY < 0) {
+            // Brake Pedal - slow down!
+            window.trackSpeed += moveY * (this.data.acceleration * 1.5) * dt;
             if (window.trackSpeed < this.data.minSpeed) window.trackSpeed = this.data.minSpeed;
         }
     }
@@ -68,6 +132,8 @@ AFRAME.registerComponent('infinite-scroll', {
     },
 
     tick: function (time, timeDelta) {
+        if (window.isGamePaused) return;
+
         let z = this.el.object3D.position.z;
 
         // Move object toward camera using the global track speed
@@ -95,6 +161,7 @@ AFRAME.registerComponent('arcade-movement', {
     },
 
     tick: function (time) {
+        if (window.isGamePaused) return;
         // Sway left/right on the mini screen
         let newX = this.startX + Math.sin(time / 1000 * this.data.speed) * this.data.range;
         this.el.object3D.position.x = newX;
@@ -116,7 +183,7 @@ AFRAME.registerComponent('traffic-spawner', {
     },
 
     tick: function (time, timeDelta) {
-        if (!timeDelta) return;
+        if (window.isGamePaused || !timeDelta) return;
         this.timer += timeDelta;
 
         // Reads window.carSpawnIntervalSeconds dynamically (convert seconds to ms)
@@ -142,7 +209,7 @@ AFRAME.registerComponent('traffic-spawner', {
         let colors = ['#e74c3c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#1abc9c'];
         let carColor = colors[Math.floor(Math.random() * colors.length)];
 
-        // Car Main Body (Standard car dimensions, keeping car size same)
+        // Car Main Body
         let body = document.createElement('a-box');
         body.setAttribute('position', '0 0.5 0');
         body.setAttribute('width', '1.5');
@@ -160,7 +227,7 @@ AFRAME.registerComponent('traffic-spawner', {
         cabin.setAttribute('color', '#222222');
         carEl.appendChild(cabin);
 
-        // Headlights (Facing +Z toward player)
+        // Headlights
         let headlightLeft = document.createElement('a-box');
         headlightLeft.setAttribute('position', '-0.5 0.5 1.26');
         headlightLeft.setAttribute('width', '0.3');
@@ -227,6 +294,8 @@ AFRAME.registerComponent('traffic-car', {
     },
 
     tick: function (time, timeDelta) {
+        if (window.isGamePaused) return;
+
         let pos = this.el.object3D.position;
         let dt = timeDelta / 1000;
 
@@ -311,5 +380,49 @@ AFRAME.registerComponent('traffic-car', {
                 if (spark.parentNode) spark.parentNode.removeChild(spark);
             }, 250);
         }
+    }
+});
+
+// 6. EXIT MODAL HANDLER & VR CONTROLLER LISTENER
+AFRAME.registerComponent('exit-modal-handler', {
+    init: function () {
+        let sceneEl = this.el.sceneEl;
+        let exitModal = document.querySelector('#exit-modal');
+        let btnExit = document.querySelector('#btn-exit-game');
+        let btnStay = document.querySelector('#btn-stay-game');
+
+        window.toggleExitModal = () => {
+            if (!exitModal) return;
+            let isVisible = exitModal.getAttribute('visible') === 'true';
+            let nextState = !isVisible;
+            exitModal.setAttribute('visible', nextState ? 'true' : 'false');
+            window.isGamePaused = nextState;
+        };
+
+        if (btnExit) {
+            btnExit.addEventListener('click', () => {
+                if (sceneEl && sceneEl.is('vr-mode')) {
+                    sceneEl.exitVR();
+                }
+                if (exitModal) exitModal.setAttribute('visible', 'false');
+                window.isGamePaused = false;
+                window.location.reload();
+            });
+        }
+
+        if (btnStay) {
+            btnStay.addEventListener('click', () => {
+                if (exitModal) exitModal.setAttribute('visible', 'false');
+                window.isGamePaused = false;
+            });
+        }
+
+        // VR Controller Button X (or Y) trigger events
+        this.el.addEventListener('xbuttondown', () => {
+            window.toggleExitModal();
+        });
+        this.el.addEventListener('ybuttondown', () => {
+            window.toggleExitModal();
+        });
     }
 });
