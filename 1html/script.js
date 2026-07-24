@@ -7,7 +7,7 @@ window.carSpawnIntervalSeconds = 2;
 // Global game pause flag (used when Exit modal is active)
 window.isGamePaused = false;
 
-// 1. CAR CONTROLS COMPONENT (Keyboard + VR Controller Thumbstick)
+// 1. CAR CONTROLS COMPONENT (Keyboard + VR Controller Thumbstick + WebXR InputSources)
 AFRAME.registerComponent('car-controls', {
     schema: {
         steerSpeed: { type: 'number', default: 5.0 }, // How fast car moves sideways
@@ -21,6 +21,10 @@ AFRAME.registerComponent('car-controls', {
         // Keep track of which keys are currently held down
         this.keys = {};
         this.xButtonPressed = false;
+
+        // VR Thumbstick state storage from events
+        this.vrAxisX = 0;
+        this.vrAxisY = 0;
 
         // Find Steering Wheel Entity for realistic visual turn animation
         this.steeringWheelEl = this.el.querySelector('a-torus')?.parentNode || null;
@@ -37,6 +41,22 @@ AFRAME.registerComponent('car-controls', {
         window.addEventListener('keyup', (e) => {
             this.keys[e.code] = false;
         });
+
+        // Listen for A-Frame WebXR controller axis events (works in Quest & Immersive Web Emulator)
+        let updateVrAxes = (evt) => {
+            if (!evt || !evt.detail) return;
+            let detail = evt.detail;
+            if (detail.x !== undefined && detail.y !== undefined) {
+                this.vrAxisX = detail.x;
+                this.vrAxisY = detail.y;
+            } else if (detail.axis) {
+                this.vrAxisX = detail.axis[0] || 0;
+                this.vrAxisY = detail.axis[1] || 0;
+            }
+        };
+
+        this.el.sceneEl.addEventListener('axismoved', updateVrAxes);
+        this.el.sceneEl.addEventListener('thumbstickmoved', updateVrAxes);
     },
 
     tick: function (time, timeDelta) {
@@ -54,46 +74,74 @@ AFRAME.registerComponent('car-controls', {
         if (this.keys['ArrowUp'] || this.keys['KeyW']) moveY += 1;
         if (this.keys['ArrowDown'] || this.keys['KeyS']) moveY -= 1;
 
-        // --- 2. VR THUMBSTICK & CONTROLLER INPUT ---
+        // --- 2. VR THUMBSTICK AXES (FROM EVENT LISTENERS) ---
+        if (Math.abs(this.vrAxisX) > 0.1) moveX = this.vrAxisX;
+        if (Math.abs(this.vrAxisY) > 0.1) moveY = -this.vrAxisY;
+
+        // --- 3. DIRECT WEBXR INPUT SOURCES (FOR QUEST & EMULATOR) ---
+        let sceneEl = this.el.sceneEl;
+        if (sceneEl && sceneEl.xrSession && sceneEl.xrSession.inputSources) {
+            let sources = sceneEl.xrSession.inputSources;
+            for (let i = 0; i < sources.length; i++) {
+                let src = sources[i];
+                if (src && src.gamepad && src.gamepad.axes) {
+                    let axes = src.gamepad.axes;
+                    let axX = 0;
+                    let axY = 0;
+
+                    if (axes.length >= 4) {
+                        // Standard Oculus Touch / WebXR Gamepad Thumbstick mapping
+                        let mainX = axes[2];
+                        let mainY = axes[3];
+                        let altX = axes[0];
+                        let altY = axes[1];
+                        axX = Math.abs(mainX) > 0.1 ? mainX : (Math.abs(altX) > 0.1 ? altX : 0);
+                        axY = Math.abs(mainY) > 0.1 ? mainY : (Math.abs(altY) > 0.1 ? altY : 0);
+                    } else if (axes.length >= 2) {
+                        axX = Math.abs(axes[0]) > 0.1 ? axes[0] : 0;
+                        axY = Math.abs(axes[1]) > 0.1 ? axes[1] : 0;
+                    }
+
+                    if (Math.abs(axX) > 0.1) moveX = axX;
+                    if (Math.abs(axY) > 0.1) moveY = -axY;
+
+                    // Check Left Controller X Button (Button 4 or 3)
+                    if (src.gamepad.buttons) {
+                        let btns = src.gamepad.buttons;
+                        let isXDown = (btns[4] && btns[4].pressed) || (btns[3] && btns[3].pressed);
+                        if (isXDown) {
+                            if (!this.xButtonPressed) {
+                                this.xButtonPressed = true;
+                                if (window.toggleExitModal) window.toggleExitModal();
+                            }
+                        } else {
+                            this.xButtonPressed = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- 4. FALLBACK HTML5 GAMEPADS ---
         let gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
         for (let i = 0; i < gamepads.length; i++) {
             let gp = gamepads[i];
             if (!gp || !gp.axes) continue;
 
-            // Reading Quest / VR Controller Thumbsticks
-            let axisX = 0;
-            let axisY = 0;
+            let axes = gp.axes;
+            let axX = 0;
+            let axY = 0;
 
-            if (gp.axes.length >= 4) {
-                // Primary thumbstick axes: axes[2] (X) and axes[3] (Y)
-                let mainX = gp.axes[2];
-                let mainY = gp.axes[3];
-                let fallbackX = gp.axes[0];
-                let fallbackY = gp.axes[1];
-
-                axisX = Math.abs(mainX) > 0.15 ? mainX : (Math.abs(fallbackX) > 0.15 ? fallbackX : 0);
-                axisY = Math.abs(mainY) > 0.15 ? mainY : (Math.abs(fallbackY) > 0.15 ? fallbackY : 0);
-            } else if (gp.axes.length >= 2) {
-                let ax0 = gp.axes[0];
-                let ax1 = gp.axes[1];
-                axisX = Math.abs(ax0) > 0.15 ? ax0 : 0;
-                axisY = Math.abs(ax1) > 0.15 ? ax1 : 0;
+            if (axes.length >= 4) {
+                axX = Math.abs(axes[2]) > 0.1 ? axes[2] : (Math.abs(axes[0]) > 0.1 ? axes[0] : 0);
+                axY = Math.abs(axes[3]) > 0.1 ? axes[3] : (Math.abs(axes[1]) > 0.1 ? axes[1] : 0);
+            } else if (axes.length >= 2) {
+                axX = Math.abs(axes[0]) > 0.1 ? axes[0] : 0;
+                axY = Math.abs(axes[1]) > 0.1 ? axes[1] : 0;
             }
 
-            if (Math.abs(axisX) > 0.15) moveX = axisX;
-            // Thumbstick Y is negative when pushed UP (accelerate) and positive when pulled DOWN (brake)
-            if (Math.abs(axisY) > 0.15) moveY = -axisY;
-
-            // Check Left Controller 'X' button (Button index 4 or 3 depending on browser mapping)
-            let isXDown = (gp.buttons[4] && gp.buttons[4].pressed) || (gp.buttons[3] && gp.buttons[3].pressed);
-            if (isXDown) {
-                if (!this.xButtonPressed) {
-                    this.xButtonPressed = true;
-                    if (window.toggleExitModal) window.toggleExitModal();
-                }
-            } else {
-                this.xButtonPressed = false;
-            }
+            if (Math.abs(axX) > 0.1) moveX = axX;
+            if (Math.abs(axY) > 0.1) moveY = -axY;
         }
 
         // --- APPLY STEERING (Left / Right) ---
