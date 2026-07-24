@@ -1,0 +1,28 @@
+# Node modules & dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Android build outputs & temporary files
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+*.keystore
+*.zip
+.idea/
+*.log
+
+# Build & utility scratch scripts
+build-twa.js
+check-sdk.js
+generate-apk.js
+sign-apk.js
+test-api.js
+twa-manifest.json
+
+# OS files
+.DS_Store
+Thumbs.db
