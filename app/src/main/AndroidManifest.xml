@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING" />
 
     <uses-feature
+        android:glEsVersion="0x00030000"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.vulkan.version"
+        android:value="0x04000000"
+        android:required="false" />
+
+    <uses-feature
         android:name="android.hardware.vr.headtracking"
-        android:required="false"
+        android:required="true"
         android:version="1" />
 
     <uses-feature
@@ -21,9 +32,58 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
+        <meta-data
+            android:name="com.oculus.supportedDevices"
+            android:value="quest2|questpro|quest3|quest3s" />
+
+        <meta-data
+            android:name="com.oculus.hzos.min_sdk_version"
+            android:value="1" />
+
+        <meta-data
+            android:name="com.oculus.horizon.min_sdk_version"
+            android:value="1" />
+
+        <meta-data
+            android:name="com.oculus.focusaware"
+            android:value="true" />
+
+        <meta-data
+            android:name="com.oculus.vr.focusaware"
+            android:value="true" />
+
+        <meta-data
+            android:name="com.oculus.sdk.version"
+            android:value="68.0.0" />
+
+        <meta-data
+            android:name="com.oculus.sdk.version.code"
+            android:value="1" />
+
+        <meta-data
+            android:name="com.oculus.horizon.sdk.version"
+            android:value="68.0.0" />
+
+        <meta-data
+            android:name="com.oculus.horizon.sdk.version.code"
+            android:value="1" />
+
+        <meta-data
+            android:name="com.oculus.ossdk.version"
+            android:value="68.0.0" />
+
+        <meta-data
+            android:name="com.oculus.telemetry.manifest.v2"
+            android:value="true" />
+
+        <meta-data
+            android:name="com.oculus.handtracking.version"
+            android:value="V2.0" />
+
         <activity
             android:name=".MainActivity"
             android:alwaysRetainTaskState="true"
+            android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/appName"
@@ -31,6 +91,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="com.oculus.intent.category.VR" />
             </intent-filter>
         </activity>
 

@@ -1,5 +1,5 @@
 {
-  "name": "Arcade Cockpit VR Drive",
+  "name": "Arcade Cockpit",
   "short_name": "VR Drive",
   "description": "Arcade Cockpit View - Driveable Car WebXR Game for Meta Horizon VR",
   "start_url": "./index.html",
