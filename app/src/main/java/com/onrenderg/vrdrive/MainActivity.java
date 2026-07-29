@@ -32,6 +32,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize Meta Horizon Platform SDK
+        try {
+            com.meta.horizon.platform.ovr.Core.asyncInitialize("1342260865627707", this.getApplicationContext());
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
         // Immersive Fullscreen Mode
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,

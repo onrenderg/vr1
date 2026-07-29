@@ -1,0 +1,18 @@
+{
+  "name": "Arcade Cockpit",
+  "short_name": "Arcade Cockpit",
+  "description": "Arcade Cockpit View - Driveable Car WebXR Game for Meta Horizon VR",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#111111",
+  "theme_color": "#e74c3c",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
