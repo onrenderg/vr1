@@ -55,7 +55,7 @@ android {
     namespace "com.onrenderg.vrdrive"
     defaultConfig {
         applicationId "com.onrenderg.vrdrive"
-        minSdkVersion 23
+        minSdkVersion 29
         targetSdkVersion 34
         versionCode 1
         versionName "1.0.0"
@@ -157,7 +157,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             signingConfig signingConfigs.release
         }
     }
@@ -214,4 +214,5 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.6.2'
+    implementation 'com.meta.horizon.platform.ovr:android-platform-sdk:77.0.1'
 }

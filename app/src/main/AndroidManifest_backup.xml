@@ -54,7 +54,7 @@
 
         <meta-data
             android:name="com.oculus.sdk.version"
-            android:value="77.0.1" />
+            android:value="68.0.0" />
 
         <meta-data
             android:name="com.oculus.sdk.version.code"
@@ -62,7 +62,7 @@
 
         <meta-data
             android:name="com.oculus.horizon.sdk.version"
-            android:value="77.0.1" />
+            android:value="68.0.0" />
 
         <meta-data
             android:name="com.oculus.horizon.sdk.version.code"
@@ -70,9 +70,7 @@
 
         <meta-data
             android:name="com.oculus.ossdk.version"
-            android:value="77.0.1" />
-
-
+            android:value="68.0.0" />
 
         <meta-data
             android:name="com.oculus.telemetry.manifest.v2"
