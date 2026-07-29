@@ -1,8 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.onrenderg.vrdrive",
-        "sha256_cert_fingerprints": ["58:43:4C:60:69:48:6C:A8:A4:0A:F6:BF:84:D7:7E:02:2A:3E:2E:1A:45:09:73:E6:CD:39:A3:D2:77:BF:50:23"]
-      }
-    }]
