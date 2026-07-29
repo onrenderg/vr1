@@ -147,9 +147,18 @@ android {
 
         
     }
+    signingConfigs {
+        release {
+            storeFile file('../release.keystore')
+            storePassword 'androidrelease'
+            keyAlias 'releasekey'
+            keyPassword 'androidrelease'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
