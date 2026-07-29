@@ -24,8 +24,8 @@ def twaManifest = [
     applicationId: 'com.onrenderg.vrdrive',
     hostName: 'onrenderg.github.io', // The domain being opened in the TWA.
     launchUrl: '/vr1/index.html', // The start path for the TWA. Must be relative to the domain.
-    name: 'Arcade Cockpit VR Drive', // The application name.
-    launcherName: 'VR Drive', // The name shown on the Android Launcher.
+    name: 'Arcade Cockpit', // The application name.
+    launcherName: 'Arcade Cockpit', // The name shown on the Android Launcher.
     themeColor: '#E74C3C', // The color used for the status bar.
     themeColorDark: '#000000', // The color used for the dark status bar.
     navigationColor: '#111111', // The color used for the navigation bar.

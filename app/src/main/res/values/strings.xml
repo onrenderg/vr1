@@ -9,7 +9,7 @@
         }
     }]
   </string>
-  <string name="appName">Arcade Cockpit VR Drive</string>
+  <string name="appName">Arcade Cockpit</string>
   <string name="launchUrl">https://onrenderg.github.io/vr1/index.html</string>
   <string name="fullScopeUrl">https://onrenderg.github.io/vr1/</string>
   <string name="generatorApp">bubblewrap-cli</string>
