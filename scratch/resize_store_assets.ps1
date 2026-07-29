@@ -18,6 +18,8 @@ $img2 = "C:\Users\parth-nic\.gemini\antigravity-ide\brain\49f7a741-e9f3-4476-94d
 $img3 = "C:\Users\parth-nic\.gemini\antigravity-ide\brain\49f7a741-e9f3-4476-94d1-e1bae0026813\store_icon_512_1785319089444.png"
 
 Resize-Image -src $img1 -dest "c:\Users\parth-nic\Desktop\july29\vr1\bubblewrap\landscape_cover_2560x1440.png" -w 2560 -h 1440
+Resize-Image -src $img1 -dest "c:\Users\parth-nic\Desktop\july29\vr1\bubblewrap\square_cover_1440x1440.png" -w 1440 -h 1440
+Resize-Image -src $img1 -dest "c:\Users\parth-nic\Desktop\july29\vr1\bubblewrap\portrait_cover_1080x1440.png" -w 1080 -h 1440
 Resize-Image -src $img2 -dest "c:\Users\parth-nic\Desktop\july29\vr1\bubblewrap\hero_cover_3000x900.png" -w 3000 -h 900
 Resize-Image -src $img3 -dest "c:\Users\parth-nic\Desktop\july29\vr1\bubblewrap\store_icon_512.png" -w 512 -h 512
 
