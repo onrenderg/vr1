@@ -53,14 +53,14 @@ def twaManifest = [
 
 android {
     
-        compileSdkVersion 36
+        compileSdkVersion 34
     
     namespace "com.onrenderg.vrdrive"
     defaultConfig {
         applicationId "com.onrenderg.vrdrive"
         minSdkVersion 29
         
-            targetSdkVersion 35
+            targetSdkVersion 34
         
         versionCode 2
         versionName "1.0.0"
