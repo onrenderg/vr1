@@ -51,11 +51,11 @@
 
         <meta-data
             android:name="com.oculus.hzos.min_sdk_version"
-            android:value="1" />
+            android:value="1.0.0" />
 
         <meta-data
             android:name="com.oculus.horizon.min_sdk_version"
-            android:value="1" />
+            android:value="1.0.0" />
 
         <meta-data
             android:name="com.oculus.vr.focusaware"
@@ -63,11 +63,15 @@
 
         <meta-data
             android:name="com.oculus.sdk.version"
-            android:value="77.0.1" />
+            android:value="1.0.0" />
+
+        <meta-data
+            android:name="com.oculus.horizon.sdk.version"
+            android:value="1.0.0" />
 
         <meta-data
             android:name="com.oculus.ossdk.version"
-            android:value="77.0.1" />
+            android:value="1.0.0" />
 
         <meta-data
             android:name="com.oculus.telemetry.manifest.v2"
