@@ -7,3 +7,7 @@ body {
     overflow: hidden;
     background-color: #000;
 }
+
+.a-enter-vr, .a-orientation-modal {
+    display: none !important;
+}
