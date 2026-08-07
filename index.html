@@ -22,7 +22,7 @@
     <div id="vr-launch-overlay">
         <h1>Arcade Cockpit VR</h1>
         <p>Select your character avatar suit and launch directly into immersive VR on Meta Quest.</p>
-        
+
         <div class="character-select-box">
             <button class="char-btn active" data-style="cyber-racer">⚡ Cyber Racer</button>
             <button class="char-btn" data-style="mecha-android">🤖 Mecha Android</button>
@@ -37,13 +37,17 @@
 
     <!-- IN-GAME HUD BUTTONS -->
     <div id="in-game-ui">
-        <button id="btn-view-toggle" class="hud-btn" onclick="if(window.toggleCameraView) window.toggleCameraView();">🎥 View: 1st Person</button>
+        <button id="btn-view-toggle" class="hud-btn" onclick="if(window.toggleCameraView) window.toggleCameraView();">🎥
+            View: 1st Person</button>
     </div>
 
-    <a-scene traffic-spawner fog="type: exponential; color: #0c071e; density: 0.02" webxr="requiredFeatures: local-floor; optionalFeatures: hit-test, bounded-floor, hand-tracking; referenceSpaceType: local-floor">
+    <a-scene traffic-spawner fog="type: exponential; color: #0c071e; density: 0.02"
+        webxr="requiredFeatures: local-floor; optionalFeatures: hit-test, bounded-floor, hand-tracking; referenceSpaceType: local-floor">
         <!-- VR CONTROLLERS & RAYCASTERS -->
-        <a-entity id="left-controller" oculus-touch-controls="hand: left" exit-modal-handler laser-controls="hand: left" raycaster="objects: .clickable; far: 5"></a-entity>
-        <a-entity id="right-controller" oculus-touch-controls="hand: right" exit-modal-handler laser-controls="hand: right" raycaster="objects: .clickable; far: 5"></a-entity>
+        <a-entity id="left-controller" oculus-touch-controls="hand: left" exit-modal-handler laser-controls="hand: left"
+            raycaster="objects: .clickable; far: 5"></a-entity>
+        <a-entity id="right-controller" oculus-touch-controls="hand: right" exit-modal-handler
+            laser-controls="hand: right" raycaster="objects: .clickable; far: 5"></a-entity>
 
         <!-- CYBERPUNK NIGHT SKY & LIGHTING -->
         <a-sky color="#05021a"></a-sky>
@@ -51,29 +55,45 @@
         <a-light type="directional" color="#00f0ff" intensity="1.5" position="-10 20 -10"></a-light>
 
         <!-- STATIC ROAD BASE (Dark Cyber Asphalt) -->
-        <a-plane position="0 0 -18" rotation="-90 0 0" width="12" height="40" color="#0a0a14" material="roughness: 0.2; metalness: 0.8"></a-plane>
+        <a-plane position="0 0 -18" rotation="-90 0 0" width="12" height="40" color="#0a0a14"
+            material="roughness: 0.2; metalness: 0.8"></a-plane>
 
         <!-- SHINING NEON CYAN TRACK LINES (Looping at X = -3, 0, 3) -->
         <!-- Lane Divider Left (X = -3) -->
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -6" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -14" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -22" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -30" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -38" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -6" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -14" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -22" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -30" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="-3 0.03 -38" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
 
         <!-- Center Track Line (X = 0 - Glowing Cyan Strip) -->
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -6" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -14" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -22" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -30" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -38" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -6" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -14" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -22" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -30" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="0 0.03 -38" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
 
         <!-- Lane Divider Right (X = 3) -->
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -6" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -14" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -22" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -30" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
-        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -38" rotation="-90 0 0" width="0.22" height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -6" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -14" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -22" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -30" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
+        <a-plane infinite-scroll="resetZ: 2; startZ: -38" position="3 0.03 -38" rotation="-90 0 0" width="0.22"
+            height="3.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-plane>
 
         <!-- =================================================== -->
         <!-- CYBERPUNK FUTURISTIC BUILDINGS (LEFT & RIGHT SIDE)  -->
@@ -82,39 +102,51 @@
         <!-- LEFT SIDE CYBER SKYSCRAPERS -->
         <a-entity infinite-scroll="resetZ: 2; startZ: -38" position="-11 0 -8">
             <a-box position="0 6 0" width="5" height="12" depth="6" color="#0d0f18"></a-box>
-            <a-plane position="2.51 6 0" rotation="0 90 0" width="5.8" height="11.8" color="#00f0ff" material="shader: flat; opacity: 0.25; transparent: true"></a-plane>
-            <a-box position="0 12.3 0" width="0.4" height="2" depth="0.4" color="#ff007f" material="shader: flat; emissive: #ff007f"></a-box>
+            <a-plane position="2.51 6 0" rotation="0 90 0" width="5.8" height="11.8" color="#00f0ff"
+                material="shader: flat; opacity: 0.25; transparent: true"></a-plane>
+            <a-box position="0 12.3 0" width="0.4" height="2" depth="0.4" color="#ff007f"
+                material="shader: flat; emissive: #ff007f"></a-box>
         </a-entity>
 
         <a-entity infinite-scroll="resetZ: 2; startZ: -38" position="-13 0 -22">
             <a-box position="0 9 0" width="6" height="18" depth="6" color="#120c24"></a-box>
-            <a-plane position="3.01 9 0" rotation="0 90 0" width="5.8" height="17.8" color="#ff007f" material="shader: flat; opacity: 0.3; transparent: true"></a-plane>
-            <a-cylinder position="0 18.5 0" radius="0.2" height="3" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-cylinder>
+            <a-plane position="3.01 9 0" rotation="0 90 0" width="5.8" height="17.8" color="#ff007f"
+                material="shader: flat; opacity: 0.3; transparent: true"></a-plane>
+            <a-cylinder position="0 18.5 0" radius="0.2" height="3" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-cylinder>
         </a-entity>
 
         <a-entity infinite-scroll="resetZ: 2; startZ: -38" position="-11 0 -36">
             <a-box position="0 7.5 0" width="5" height="15" depth="5" color="#08101d"></a-box>
-            <a-plane position="2.51 7.5 0" rotation="0 90 0" width="4.8" height="14.8" color="#ffcc00" material="shader: flat; opacity: 0.2; transparent: true"></a-plane>
-            <a-box position="0 15.3 0" width="0.4" height="2.5" depth="0.4" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
+            <a-plane position="2.51 7.5 0" rotation="0 90 0" width="4.8" height="14.8" color="#ffcc00"
+                material="shader: flat; opacity: 0.2; transparent: true"></a-plane>
+            <a-box position="0 15.3 0" width="0.4" height="2.5" depth="0.4" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-box>
         </a-entity>
 
         <!-- RIGHT SIDE CYBER SKYSCRAPERS -->
         <a-entity infinite-scroll="resetZ: 2; startZ: -38" position="11 0 -12">
             <a-box position="0 8 0" width="5" height="16" depth="6" color="#150a21"></a-box>
-            <a-plane position="-2.51 8 0" rotation="0 -90 0" width="5.8" height="15.8" color="#ff007f" material="shader: flat; opacity: 0.3; transparent: true"></a-plane>
-            <a-cylinder position="0 16.5 0" radius="0.2" height="3" color="#ff007f" material="shader: flat; emissive: #ff007f"></a-cylinder>
+            <a-plane position="-2.51 8 0" rotation="0 -90 0" width="5.8" height="15.8" color="#ff007f"
+                material="shader: flat; opacity: 0.3; transparent: true"></a-plane>
+            <a-cylinder position="0 16.5 0" radius="0.2" height="3" color="#ff007f"
+                material="shader: flat; emissive: #ff007f"></a-cylinder>
         </a-entity>
 
         <a-entity infinite-scroll="resetZ: 2; startZ: -38" position="13 0 -26">
             <a-box position="0 11 0" width="6" height="22" depth="6" color="#091326"></a-box>
-            <a-plane position="-3.01 11 0" rotation="0 -90 0" width="5.8" height="21.8" color="#00f0ff" material="shader: flat; opacity: 0.35; transparent: true"></a-plane>
-            <a-box position="0 22.4 0" width="0.5" height="4" depth="0.5" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
+            <a-plane position="-3.01 11 0" rotation="0 -90 0" width="5.8" height="21.8" color="#00f0ff"
+                material="shader: flat; opacity: 0.35; transparent: true"></a-plane>
+            <a-box position="0 22.4 0" width="0.5" height="4" depth="0.5" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-box>
         </a-entity>
 
         <a-entity infinite-scroll="resetZ: 2; startZ: -38" position="11 0 -38">
             <a-box position="0 6.5 0" width="5" height="13" depth="5" color="#1a0b18"></a-box>
-            <a-plane position="-2.51 6.5 0" rotation="0 -90 0" width="4.8" height="12.8" color="#9900ff" material="shader: flat; opacity: 0.25; transparent: true"></a-plane>
-            <a-box position="0 13.3 0" width="0.4" height="2" depth="0.4" color="#ff007f" material="shader: flat; emissive: #ff007f"></a-box>
+            <a-plane position="-2.51 6.5 0" rotation="0 -90 0" width="4.8" height="12.8" color="#9900ff"
+                material="shader: flat; opacity: 0.25; transparent: true"></a-plane>
+            <a-box position="0 13.3 0" width="0.4" height="2" depth="0.4" color="#ff007f"
+                material="shader: flat; emissive: #ff007f"></a-box>
         </a-entity>
 
         <!-- =================================================== -->
@@ -129,30 +161,41 @@
             <a-entity id="camera-rig" camera-view-toggle position="0 1.2 0">
                 <a-camera wasd-controls="enabled: false">
                     <!-- CRASH RED FLASH OVERLAY -->
-                    <a-plane id="crash-flash" position="0 0 -0.3" width="2" height="2" color="#ff0000" material="shader: flat; opacity: 0.55; transparent: true" visible="false"></a-plane>
-                    
+                    <a-plane id="crash-flash" position="0 0 -0.3" width="2" height="2" color="#ff0000"
+                        material="shader: flat; opacity: 0.55; transparent: true" visible="false"></a-plane>
+
                     <!-- CRASH WARNING TEXT HUD -->
-                    <a-text id="crash-warning-text" value="💥 CRASH PENALTY!" position="-0.7 0.35 -0.6" scale="0.45 0.45 0.45" color="#ff1111" visible="false"></a-text>
+                    <a-text id="crash-warning-text" value="💥 CRASH PENALTY!" position="-0.7 0.35 -0.6"
+                        scale="0.45 0.45 0.45" color="#ff1111" visible="false"></a-text>
 
                     <!-- EXIT GAME DIALOG MODAL (Attached to camera view) -->
                     <a-entity id="exit-modal" position="0 0.05 -0.8" visible="false">
-                        <a-plane position="0 0 0" width="0.9" height="0.5" color="#0f172a" material="shader: flat; opacity: 0.95; transparent: true"></a-plane>
-                        <a-text value="EXIT GAME?" position="0 0.15 0.01" align="center" color="#ffffff" scale="0.45 0.45 0.45"></a-text>
-                        <a-text value="Press X key / button to toggle" position="0 0.07 0.01" align="center" color="#94a3b8" scale="0.22 0.22 0.22"></a-text>
-                        
+                        <a-plane position="0 0 0" width="0.9" height="0.5" color="#0f172a"
+                            material="shader: flat; opacity: 0.95; transparent: true"></a-plane>
+                        <a-text value="EXIT GAME?" position="0 0.15 0.01" align="center" color="#ffffff"
+                            scale="0.45 0.45 0.45"></a-text>
+                        <a-text value="Press X key / button to toggle" position="0 0.07 0.01" align="center"
+                            color="#94a3b8" scale="0.22 0.22 0.22"></a-text>
+
                         <!-- EXIT BUTTON (Red) -->
-                        <a-box id="btn-exit-game" class="clickable" position="-0.2 -0.08 0.02" width="0.32" height="0.14" depth="0.02" color="#ef4444">
-                            <a-text value="EXIT" position="0 0 0.02" align="center" color="#ffffff" scale="0.35 0.35 0.35"></a-text>
+                        <a-box id="btn-exit-game" class="clickable" position="-0.2 -0.08 0.02" width="0.32"
+                            height="0.14" depth="0.02" color="#ef4444">
+                            <a-text value="EXIT" position="0 0 0.02" align="center" color="#ffffff"
+                                scale="0.35 0.35 0.35"></a-text>
                         </a-box>
-                        
+
                         <!-- STAY BUTTON (Green) -->
-                        <a-box id="btn-stay-game" class="clickable" position="0.2 -0.08 0.02" width="0.32" height="0.14" depth="0.02" color="#22c55e">
-                            <a-text value="STAY" position="0 0 0.02" align="center" color="#ffffff" scale="0.35 0.35 0.35"></a-text>
+                        <a-box id="btn-stay-game" class="clickable" position="0.2 -0.08 0.02" width="0.32" height="0.14"
+                            depth="0.02" color="#22c55e">
+                            <a-text value="STAY" position="0 0 0.02" align="center" color="#ffffff"
+                                scale="0.35 0.35 0.35"></a-text>
                         </a-box>
                     </a-entity>
 
                     <!-- CURSOR FOR DESKTOP & VR SELECTION -->
-                    <a-cursor id="mouse-cursor" raycaster="objects: .clickable" cursor="fuse: false" position="0 0 -0.5" geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.01" material="color: #00f0ff; shader: flat"></a-cursor>
+                    <a-cursor id="mouse-cursor" raycaster="objects: .clickable" cursor="fuse: false" position="0 0 -0.5"
+                        geometry="primitive: ring; radiusInner: 0.005; radiusOuter: 0.01"
+                        material="color: #00f0ff; shader: flat"></a-cursor>
                 </a-camera>
             </a-entity>
 
@@ -161,62 +204,87 @@
             <!-- =================================================== -->
 
             <!-- FRONT CAR HOOD / BONNET (Cyber Metallic Red & Cyan Stripes) -->
-            <a-box position="0 0.45 -1.6" width="1.6" height="0.35" depth="2.2" color="#11152b" material="roughness: 0.3; metalness: 0.7"></a-box>
+            <a-box position="0 0.45 -1.6" width="1.6" height="0.35" depth="2.2" color="#11152b"
+                material="roughness: 0.3; metalness: 0.7"></a-box>
             <!-- Hood Center Power Bulge (Glowing Cyan Strip) -->
-            <a-box position="0 0.63 -1.6" width="0.4" height="0.05" depth="2.1" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
+            <a-box position="0 0.63 -1.6" width="0.4" height="0.05" depth="2.1" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-box>
 
             <!-- FRONT BUMPER & HEADLIGHTS -->
             <a-box position="0 0.35 -2.68" width="1.58" height="0.25" depth="0.1" color="#050814"></a-box>
-            <a-box position="-0.55 0.5 -2.67" width="0.35" height="0.15" depth="0.05" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
-            <a-box position="0.55 0.5 -2.67" width="0.35" height="0.15" depth="0.05" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
+            <a-box position="-0.55 0.5 -2.67" width="0.35" height="0.15" depth="0.05" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-box>
+            <a-box position="0.55 0.5 -2.67" width="0.35" height="0.15" depth="0.05" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-box>
 
             <!-- SIDE BODY PANELS & DOORS -->
             <a-box position="-0.82 0.5 -0.4" width="0.15" height="0.6" depth="2.2" color="#0d1124"></a-box>
             <a-box position="0.82 0.5 -0.4" width="0.15" height="0.6" depth="2.2" color="#0d1124"></a-box>
 
             <!-- SIDE REARVIEW MIRRORS -->
-            <a-box position="-0.92 1.05 -0.6" width="0.15" height="0.1" depth="0.2" color="#ff007f" material="shader: flat; emissive: #ff007f" rotation="0 -15 0"></a-box>
-            <a-box position="0.92 1.05 -0.6" width="0.15" height="0.1" depth="0.2" color="#ff007f" material="shader: flat; emissive: #ff007f" rotation="0 15 0"></a-box>
+            <a-box position="-0.92 1.05 -0.6" width="0.15" height="0.1" depth="0.2" color="#ff007f"
+                material="shader: flat; emissive: #ff007f" rotation="0 -15 0"></a-box>
+            <a-box position="0.92 1.05 -0.6" width="0.15" height="0.1" depth="0.2" color="#ff007f"
+                material="shader: flat; emissive: #ff007f" rotation="0 15 0"></a-box>
 
             <!-- WHEELS (Front & Rear) -->
-            <a-cylinder position="-0.85 0.25 -1.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-cylinder>
-            <a-cylinder position="0.85 0.25 -1.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-cylinder>
-            <a-cylinder position="-0.85 0.25 0.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-cylinder>
-            <a-cylinder position="0.85 0.25 0.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-cylinder>
+            <a-cylinder position="-0.85 0.25 -1.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-cylinder>
+            <a-cylinder position="0.85 0.25 -1.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-cylinder>
+            <a-cylinder position="-0.85 0.25 0.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-cylinder>
+            <a-cylinder position="0.85 0.25 0.4" rotation="0 0 90" radius="0.28" height="0.18" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-cylinder>
 
             <!-- WINDSHIELD FRAME & A-PILLARS -->
-            <a-box position="-0.75 1.25 -0.6" width="0.1" height="0.9" depth="0.1" color="#1a1a1a" rotation="-20 0 -12"></a-box>
-            <a-box position="0.75 1.25 -0.6" width="0.1" height="0.9" depth="0.1" color="#1a1a1a" rotation="-20 0 12"></a-box>
+            <a-box position="-0.75 1.25 -0.6" width="0.1" height="0.9" depth="0.1" color="#1a1a1a"
+                rotation="-20 0 -12"></a-box>
+            <a-box position="0.75 1.25 -0.6" width="0.1" height="0.9" depth="0.1" color="#1a1a1a"
+                rotation="-20 0 12"></a-box>
             <a-box position="0 1.62 -0.52" width="1.55" height="0.08" depth="0.1" color="#1a1a1a"></a-box>
-            <a-plane position="0 1.2 -0.56" width="1.45" height="0.75" color="#88e0ff" opacity="0.15" transparent="true" rotation="-20 0 0"></a-plane>
+            <a-plane position="0 1.2 -0.56" width="1.45" height="0.75" color="#88e0ff" opacity="0.15" transparent="true"
+                rotation="-20 0 0"></a-plane>
 
             <!-- COCKPIT DASHBOARD (Neon Cyberpunk Dashboard) -->
             <a-box position="0 0.68 -0.65" width="1.5" height="0.3" depth="0.5" color="#080c1b"></a-box>
-            <a-box position="0 0.8 -0.5" width="1.48" height="0.06" depth="0.3" color="#ff007f" material="shader: flat; emissive: #ff007f"></a-box>
+            <a-box position="0 0.8 -0.5" width="1.48" height="0.06" depth="0.3" color="#ff007f"
+                material="shader: flat; emissive: #ff007f"></a-box>
 
             <!-- REAL 3D STEERING WHEEL -->
             <a-entity position="-0.25 0.82 -0.45" rotation="-25 0 0">
                 <!-- Steering Rim -->
                 <a-torus radius="0.15" tube="0.02" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-torus>
                 <!-- Steering Center Hub -->
-                <a-cylinder position="0 0 0" rotation="90 0 0" radius="0.04" height="0.03" color="#ff007f" material="shader: flat; emissive: #ff007f"></a-cylinder>
+                <a-cylinder position="0 0 0" rotation="90 0 0" radius="0.04" height="0.03" color="#ff007f"
+                    material="shader: flat; emissive: #ff007f"></a-cylinder>
                 <!-- Spokes -->
-                <a-box position="0 -0.06 0" width="0.02" height="0.12" depth="0.01" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
-                <a-box position="-0.06 0 0" width="0.12" height="0.02" depth="0.01" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
-                <a-box position="0.06 0 0" width="0.12" height="0.02" depth="0.01" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-box>
+                <a-box position="0 -0.06 0" width="0.02" height="0.12" depth="0.01" color="#00f0ff"
+                    material="shader: flat; emissive: #00f0ff"></a-box>
+                <a-box position="-0.06 0 0" width="0.12" height="0.02" depth="0.01" color="#00f0ff"
+                    material="shader: flat; emissive: #00f0ff"></a-box>
+                <a-box position="0.06 0 0" width="0.12" height="0.02" depth="0.01" color="#00f0ff"
+                    material="shader: flat; emissive: #00f0ff"></a-box>
             </a-entity>
 
             <!-- DIGITAL INSTRUMENT CLUSTER / SPEEDOMETER DISPLAY -->
-            <a-plane position="-0.25 0.95 -0.58" width="0.3" height="0.15" color="#00f0ff" material="shader: flat;" rotation="-15 0 0"></a-plane>
-            <a-plane position="0.25 0.95 -0.58" width="0.35" height="0.18" color="#05021a" material="shader: flat;" rotation="-15 0 0"></a-plane>
+            <a-plane position="-0.25 0.95 -0.58" width="0.3" height="0.15" color="#00f0ff" material="shader: flat;"
+                rotation="-15 0 0"></a-plane>
+            <a-plane position="0.25 0.95 -0.58" width="0.35" height="0.18" color="#05021a" material="shader: flat;"
+                rotation="-15 0 0"></a-plane>
 
             <!-- Arcade Controls / Mini Console on Center Dash -->
-            <a-box arcade-movement position="0.25 0.96 -0.57" width="0.08" height="0.08" depth="0.01" color="#ff0055" rotation="-15 0 0" material="shader: flat;"></a-box>
-            <a-cylinder position="0.15 0.83 -0.48" radius="0.025" height="0.04" color="#00f0ff" material="shader: flat; emissive: #00f0ff"></a-cylinder>
-            <a-cylinder position="0.35 0.83 -0.48" radius="0.025" height="0.04" color="#ff007f" material="shader: flat; emissive: #ff007f"></a-cylinder>
+            <a-box arcade-movement position="0.25 0.96 -0.57" width="0.08" height="0.08" depth="0.01" color="#ff0055"
+                rotation="-15 0 0" material="shader: flat;"></a-box>
+            <a-cylinder position="0.15 0.83 -0.48" radius="0.025" height="0.04" color="#00f0ff"
+                material="shader: flat; emissive: #00f0ff"></a-cylinder>
+            <a-cylinder position="0.35 0.83 -0.48" radius="0.025" height="0.04" color="#ff007f"
+                material="shader: flat; emissive: #ff007f"></a-cylinder>
 
         </a-entity>
     </a-scene>
+
+    <!-- v1.2 -->
 </body>
 
 </html>
