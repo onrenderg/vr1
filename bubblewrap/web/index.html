@@ -18,7 +18,29 @@
 </head>
 
 <body>
-    <a-scene traffic-spawner fog="type: exponential; color: #0c071e; density: 0.02" webxr="requiredFeatures: hit-test, local-floor;">
+    <!-- WEBXR VR LAUNCH OVERLAY (FIXES QUEST BROWSER LAUNCH BUG) -->
+    <div id="vr-launch-overlay">
+        <h1>Arcade Cockpit VR</h1>
+        <p>Select your character avatar suit and launch directly into immersive VR on Meta Quest.</p>
+        
+        <div class="character-select-box">
+            <button class="char-btn active" data-style="cyber-racer">⚡ Cyber Racer</button>
+            <button class="char-btn" data-style="mecha-android">🤖 Mecha Android</button>
+            <button class="char-btn" data-style="vaporwave-pilot">🚀 Vaporwave Pilot</button>
+        </div>
+
+        <div class="launch-btn-container">
+            <button id="btn-enter-vr" class="launch-btn">🥽 Launch VR Mode</button>
+            <button id="btn-play-desktop" class="secondary-btn">🖥️ Play 2D Desktop</button>
+        </div>
+    </div>
+
+    <!-- IN-GAME HUD BUTTONS -->
+    <div id="in-game-ui">
+        <button id="btn-view-toggle" class="hud-btn" onclick="if(window.toggleCameraView) window.toggleCameraView();">🎥 View: 1st Person</button>
+    </div>
+
+    <a-scene traffic-spawner fog="type: exponential; color: #0c071e; density: 0.02" webxr="requiredFeatures: local-floor; optionalFeatures: hit-test, bounded-floor, hand-tracking; referenceSpaceType: local-floor">
         <!-- VR CONTROLLERS & RAYCASTERS -->
         <a-entity id="left-controller" oculus-touch-controls="hand: left" exit-modal-handler laser-controls="hand: left" raycaster="objects: .clickable; far: 5"></a-entity>
         <a-entity id="right-controller" oculus-touch-controls="hand: right" exit-modal-handler laser-controls="hand: right" raycaster="objects: .clickable; far: 5"></a-entity>
@@ -100,8 +122,11 @@
         <!-- =================================================== -->
         <a-entity id="player-car" car-controls="roadLimitX: 5.2" position="0 0 0">
 
-            <!-- CAMERA (Driver Eye View) -->
-            <a-entity position="0 1.2 0">
+            <!-- 3D DRIVER CHARACTER AVATAR ENTITY -->
+            <a-entity driver-character="suitStyle: cyber-racer"></a-entity>
+
+            <!-- CAMERA RIG (1st Person Cockpit View / 3rd Person Follow View) -->
+            <a-entity id="camera-rig" camera-view-toggle position="0 1.2 0">
                 <a-camera wasd-controls="enabled: false">
                     <!-- CRASH RED FLASH OVERLAY -->
                     <a-plane id="crash-flash" position="0 0 -0.3" width="2" height="2" color="#ff0000" material="shader: flat; opacity: 0.55; transparent: true" visible="false"></a-plane>

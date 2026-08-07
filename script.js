@@ -474,3 +474,327 @@ AFRAME.registerComponent('exit-modal-handler', {
         });
     }
 });
+
+// =========================================================================
+// 7. 3D DRIVER CHARACTER COMPONENT (Helmet, Suit, Animated Hands, Legs)
+// =========================================================================
+AFRAME.registerComponent('driver-character', {
+    schema: {
+        suitStyle: { type: 'string', default: 'cyber-racer' } // 'cyber-racer', 'mecha-android', 'vaporwave-pilot'
+    },
+
+    init: function () {
+        this.steerInput = 0;
+        this.buildCharacterMesh();
+    },
+
+    buildCharacterMesh: function () {
+        // Clear previous mesh if re-building
+        while (this.el.firstChild) {
+            this.el.removeChild(this.el.firstChild);
+        }
+
+        // Color palettes for character themes
+        const palettes = {
+            'cyber-racer': { body: '#0d1124', armor: '#ff007f', visor: '#00f0ff', accents: '#00f0ff', skin: '#1e293b' },
+            'mecha-android': { body: '#18181b', armor: '#eab308', visor: '#f97316', accents: '#facc15', skin: '#09090b' },
+            'vaporwave-pilot': { body: '#2e1065', armor: '#a855f7', visor: '#ec4899', accents: '#38bdf8', skin: '#3b0764' }
+        };
+
+        const p = palettes[this.data.suitStyle] || palettes['cyber-racer'];
+
+        // --- 1. TORSO & RACING CHEST SUIT ---
+        let torso = document.createElement('a-box');
+        torso.setAttribute('position', '-0.25 0.7 -0.15');
+        torso.setAttribute('width', '0.45');
+        torso.setAttribute('height', '0.5');
+        torso.setAttribute('depth', '0.3');
+        torso.setAttribute('color', p.body);
+        torso.setAttribute('rotation', '15 0 0');
+
+        // Chest Armor Plate
+        let chestArmor = document.createElement('a-box');
+        chestArmor.setAttribute('position', '0 0.05 -0.16');
+        chestArmor.setAttribute('width', '0.42');
+        chestArmor.setAttribute('height', '0.32');
+        chestArmor.setAttribute('depth', '0.04');
+        chestArmor.setAttribute('color', p.armor);
+        chestArmor.setAttribute('material', `shader: flat; emissive: ${p.armor}`);
+        torso.appendChild(chestArmor);
+
+        // Center Reactor Core Badge
+        let core = document.createElement('a-cylinder');
+        core.setAttribute('position', '0 0.05 -0.19');
+        core.setAttribute('rotation', '90 0 0');
+        core.setAttribute('radius', '0.06');
+        core.setAttribute('height', '0.02');
+        core.setAttribute('color', p.visor);
+        core.setAttribute('material', `shader: flat; emissive: ${p.visor}`);
+        torso.appendChild(core);
+
+        this.el.appendChild(torso);
+
+        // --- 2. DRIVER HELMET & VISOR ---
+        let headGroup = document.createElement('a-entity');
+        headGroup.setAttribute('position', '-0.25 1.15 -0.05');
+
+        // Helmet Main Shell
+        let helmet = document.createElement('a-sphere');
+        helmet.setAttribute('radius', '0.18');
+        helmet.setAttribute('color', p.body);
+        helmet.setAttribute('material', 'roughness: 0.2; metalness: 0.8');
+        headGroup.appendChild(helmet);
+
+        // Glowing Cyber Visor
+        let visor = document.createElement('a-box');
+        visor.setAttribute('position', '0 0.02 -0.12');
+        visor.setAttribute('width', '0.28');
+        visor.setAttribute('height', '0.11');
+        visor.setAttribute('depth', '0.1');
+        visor.setAttribute('color', p.visor);
+        visor.setAttribute('material', `shader: flat; emissive: ${p.visor}; opacity: 0.95; transparent: true`);
+        headGroup.appendChild(visor);
+
+        // Helmet Side Ear Guards
+        let earL = document.createElement('a-cylinder');
+        earL.setAttribute('position', '-0.17 0 -0.02');
+        earL.setAttribute('rotation', '0 0 90');
+        earL.setAttribute('radius', '0.04');
+        earL.setAttribute('height', '0.04');
+        earL.setAttribute('color', p.armor);
+        earL.setAttribute('material', `shader: flat; emissive: ${p.armor}`);
+        headGroup.appendChild(earL);
+
+        let earR = document.createElement('a-cylinder');
+        earR.setAttribute('position', '0.17 0 -0.02');
+        earR.setAttribute('rotation', '0 0 90');
+        earR.setAttribute('radius', '0.04');
+        earR.setAttribute('height', '0.04');
+        earR.setAttribute('color', p.armor);
+        earR.setAttribute('material', `shader: flat; emissive: ${p.armor}`);
+        headGroup.appendChild(earR);
+
+        this.headGroup = headGroup;
+        this.el.appendChild(headGroup);
+
+        // --- 3. DRIVER ARMS & HANDS ON STEERING WHEEL ---
+        // Left Arm Container
+        let leftArm = document.createElement('a-entity');
+        leftArm.setAttribute('position', '-0.45 0.8 -0.18');
+
+        let upperArmL = document.createElement('a-cylinder');
+        upperArmL.setAttribute('position', '0 -0.1 -0.08');
+        upperArmL.setAttribute('rotation', '50 20 -20');
+        upperArmL.setAttribute('radius', '0.045');
+        upperArmL.setAttribute('height', '0.28');
+        upperArmL.setAttribute('color', p.body);
+        leftArm.appendChild(upperArmL);
+
+        let lowerArmL = document.createElement('a-cylinder');
+        lowerArmL.setAttribute('position', '0.06 -0.12 -0.18');
+        lowerArmL.setAttribute('rotation', '80 35 -10');
+        lowerArmL.setAttribute('radius', '0.04');
+        lowerArmL.setAttribute('height', '0.28');
+        lowerArmL.setAttribute('color', p.armor);
+        leftArm.appendChild(lowerArmL);
+
+        // Left Hand Glove
+        let handL = document.createElement('a-box');
+        handL.setAttribute('position', '0.08 -0.1 -0.27');
+        handL.setAttribute('width', '0.07');
+        handL.setAttribute('height', '0.07');
+        handL.setAttribute('depth', '0.09');
+        handL.setAttribute('color', p.visor);
+        handL.setAttribute('material', `shader: flat; emissive: ${p.visor}`);
+        leftArm.appendChild(handL);
+
+        this.leftArm = leftArm;
+        this.el.appendChild(leftArm);
+
+        // Right Arm Container
+        let rightArm = document.createElement('a-entity');
+        rightArm.setAttribute('position', '-0.05 0.8 -0.18');
+
+        let upperArmR = document.createElement('a-cylinder');
+        upperArmR.setAttribute('position', '0 -0.1 -0.08');
+        upperArmR.setAttribute('rotation', '50 -20 20');
+        upperArmR.setAttribute('radius', '0.045');
+        upperArmR.setAttribute('height', '0.28');
+        upperArmR.setAttribute('color', p.body);
+        rightArm.appendChild(upperArmR);
+
+        let lowerArmR = document.createElement('a-cylinder');
+        lowerArmR.setAttribute('position', '-0.06 -0.12 -0.18');
+        lowerArmR.setAttribute('rotation', '80 -35 10');
+        lowerArmR.setAttribute('radius', '0.04');
+        lowerArmR.setAttribute('height', '0.28');
+        lowerArmR.setAttribute('color', p.armor);
+        rightArm.appendChild(lowerArmR);
+
+        // Right Hand Glove
+        let handR = document.createElement('a-box');
+        handR.setAttribute('position', '-0.08 -0.1 -0.27');
+        handR.setAttribute('width', '0.07');
+        handR.setAttribute('height', '0.07');
+        handR.setAttribute('depth', '0.09');
+        handR.setAttribute('color', p.visor);
+        handR.setAttribute('material', `shader: flat; emissive: ${p.visor}`);
+        rightArm.appendChild(handR);
+
+        this.rightArm = rightArm;
+        this.el.appendChild(rightArm);
+
+        // --- 4. DRIVER LEGS & BOOTS ---
+        let legL = document.createElement('a-cylinder');
+        legL.setAttribute('position', '-0.38 0.35 -0.3');
+        legL.setAttribute('rotation', '70 0 0');
+        legL.setAttribute('radius', '0.055');
+        legL.setAttribute('height', '0.45');
+        legL.setAttribute('color', p.body);
+        this.el.appendChild(legL);
+
+        let legR = document.createElement('a-cylinder');
+        legR.setAttribute('position', '-0.12 0.35 -0.3');
+        legR.setAttribute('rotation', '70 0 0');
+        legR.setAttribute('radius', '0.055');
+        legR.setAttribute('height', '0.45');
+        legR.setAttribute('color', p.body);
+        this.el.appendChild(legR);
+
+        let bootL = document.createElement('a-box');
+        bootL.setAttribute('position', '-0.38 0.2 -0.55');
+        bootL.setAttribute('width', '0.1');
+        bootL.setAttribute('height', '0.1');
+        bootL.setAttribute('depth', '0.2');
+        bootL.setAttribute('color', p.armor);
+        this.el.appendChild(bootL);
+
+        let bootR = document.createElement('a-box');
+        bootR.setAttribute('position', '-0.12 0.2 -0.55');
+        bootR.setAttribute('width', '0.1');
+        bootR.setAttribute('height', '0.1');
+        bootR.setAttribute('depth', '0.2');
+        bootR.setAttribute('color', p.armor);
+        this.el.appendChild(bootR);
+    },
+
+    update: function (oldData) {
+        if (oldData.suitStyle !== this.data.suitStyle) {
+            this.buildCharacterMesh();
+        }
+    },
+
+    tick: function () {
+        if (window.isGamePaused) return;
+
+        // Dynamic Driver Lean & Steering Arm Animation
+        let carControls = document.querySelector('#player-car')?.components['car-controls'];
+        if (carControls) {
+            let vrX = carControls.vrAxisX || 0;
+            let keys = carControls.keys || {};
+            let keyX = (keys['ArrowRight'] || keys['KeyD'] ? 1 : 0) - (keys['ArrowLeft'] || keys['KeyA'] ? 1 : 0);
+            let steerVal = Math.abs(vrX) > 0.1 ? vrX : keyX;
+
+            // Head & Helmet tilt on steering turn
+            if (this.headGroup) {
+                let targetHeadRotZ = -steerVal * 15;
+                let curHeadZ = this.headGroup.getAttribute('rotation')?.z || 0;
+                this.headGroup.setAttribute('rotation', `0 0 ${curHeadZ + (targetHeadRotZ - curHeadZ) * 0.1}`);
+            }
+
+            // Arm rotation to match steering wheel turn
+            if (this.leftArm && this.rightArm) {
+                let armOffsetZ = steerVal * 12;
+                this.leftArm.setAttribute('rotation', `0 0 ${armOffsetZ}`);
+                this.rightArm.setAttribute('rotation', `0 0 ${armOffsetZ}`);
+            }
+        }
+    }
+});
+
+// =========================================================================
+// 8. CAMERA VIEW MODE TOGGLE (1st Person Cockpit vs 3rd Person Character View)
+// =========================================================================
+AFRAME.registerComponent('camera-view-toggle', {
+    init: function () {
+        this.is3rdPerson = false;
+        this.cameraRig = this.el;
+
+        window.toggleCameraView = () => {
+            this.is3rdPerson = !this.is3rdPerson;
+            if (this.is3rdPerson) {
+                // 3rd Person View (Follow Character & Car)
+                this.cameraRig.setAttribute('position', '0 2.4 3.6');
+                this.cameraRig.setAttribute('rotation', '-18 0 0');
+                let btn = document.querySelector('#btn-view-toggle');
+                if (btn) btn.textContent = '🎥 View: 3rd Person';
+            } else {
+                // 1st Person Driver View
+                this.cameraRig.setAttribute('position', '0 1.2 0');
+                this.cameraRig.setAttribute('rotation', '0 0 0');
+                let btn = document.querySelector('#btn-view-toggle');
+                if (btn) btn.textContent = '🎥 View: 1st Person';
+            }
+        };
+    }
+});
+
+// =========================================================================
+// 9. WEBXR LAUNCH OVERLAY & SESSION MANAGER (Fixes Quest Enter VR Issue)
+// =========================================================================
+window.addEventListener('DOMContentLoaded', () => {
+    let overlay = document.querySelector('#vr-launch-overlay');
+    let btnEnterVR = document.querySelector('#btn-enter-vr');
+    let btnPlayDesktop = document.querySelector('#btn-play-desktop');
+    let sceneEl = document.querySelector('a-scene');
+
+    // Suit Selector Buttons
+    let suitBtns = document.querySelectorAll('.char-btn');
+    suitBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            suitBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            let style = btn.getAttribute('data-style');
+            let driverChar = document.querySelector('[driver-character]');
+            if (driverChar) {
+                driverChar.setAttribute('driver-character', `suitStyle: ${style}`);
+            }
+        });
+    });
+
+    // Enter WebXR Immersive VR Session
+    if (btnEnterVR) {
+        btnEnterVR.addEventListener('click', () => {
+            if (overlay) overlay.style.display = 'none';
+
+            if (sceneEl) {
+                if (sceneEl.hasLoaded) {
+                    sceneEl.enterVR();
+                } else {
+                    sceneEl.addEventListener('loaded', () => sceneEl.enterVR());
+                }
+            }
+        });
+    }
+
+    // Play 2D Standalone / Desktop Mode
+    if (btnPlayDesktop) {
+        btnPlayDesktop.addEventListener('click', () => {
+            if (overlay) overlay.style.display = 'none';
+        });
+    }
+
+    // Automatically hide overlay if already inside VR mode
+    if (sceneEl) {
+        sceneEl.addEventListener('enter-vr', () => {
+            if (overlay) overlay.style.display = 'none';
+        });
+
+        // Error handling for VR Session failures
+        sceneEl.addEventListener('sessionend', () => {
+            console.log('WebXR session ended');
+        });
+    }
+});
+
